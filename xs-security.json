@@ -1,0 +1,57 @@
+{
+  "xsappname": "Customer_Order_Management-${org}-${space}",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.SalesRep",
+      "description": "SalesRep"
+    },
+    {
+      "name": "$XSAPPNAME.SalesManager",
+      "description": "SalesManager"
+    },
+    {
+      "name": "$XSAPPNAME.Finance",
+      "description": "Finance"
+    },
+    {
+      "name": "$XSAPPNAME.Administrator",
+      "description": "Administrator"
+    }
+  ],
+  "attributes": [],
+  "role-templates": [
+    {
+      "name": "SalesRep",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.SalesRep"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "SalesManager",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.SalesManager"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "Finance",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Finance"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "Administrator",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Administrator"
+      ],
+      "attribute-references": []
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "name": "Customer_Order_Management",
+  "version": "1.0.0",
+  "dependencies": {
+    "@cap-js/hana": "^2.8.0",
+    "@sap/cds": "^9",
+    "@sap/xssec": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2.4",
+    "@sap/cds-dk": "^9",
+    "cds-plugin-ui5": "^0.13.0",
+    "mbt": "^1.2.29",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-sales_portal": "cds watch --open salesportal/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-finance_dashboard": "cds watch --open financedashboard/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-financedashboard": "cds watch --open financedashboard/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy Customer_Order_Management --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "watch-invoice_analytics": "cds watch --open invoiceanalytics/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "private": true,
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "hana"
+      },
+      "destinations": true,
+      "html5-repo": true,
+      "workzone": true,
+      "[production]": {
+        "auth": "xsuaa"
+      },
+      "[development]": {
+        "auth": "dummy"
+      }
+    },
+    "server": {
+      "index": true
+    }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/sales_portal",
+    "app/finance_dashboard",
+    "app/financedashboard",
+    "app/invoice_analytics"
+  ]
+}

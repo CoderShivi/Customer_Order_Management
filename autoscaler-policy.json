@@ -1,0 +1,21 @@
+{
+ "instance_min_count": 1,
+ "instance_max_count": 5,
+   "schedules": {  
+   "timezone":"Asia/Kolkata",
+   "recurring_schedule":[  
+      {  
+         "start_time":"17:35",
+         "end_time":"17:59",
+         "days_of_week":[  
+            1,
+            2,
+            3
+         ],
+         "instance_min_count":1,
+         "instance_max_count":10,
+         "initial_min_instance_count":3
+      }      
+     ]
+   }
+}
