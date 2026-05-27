@@ -4,7 +4,6 @@ annotate service.InvoiceAnalytics with @(
  
     UI.Chart #Chart: {
         $Type: 'UI.ChartDefinitionType',
- 
         ChartType: #Column,
  
         DynamicMeasures: [

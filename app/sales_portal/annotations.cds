@@ -9,7 +9,7 @@ annotate service.SalesOrders with @(
                 Label: 'OrderDate',
                 Value: OrderDate,
             },
-             {
+            {
                 $Type: 'UI.DataField',
                 Label: 'Customer',
                 Value: Customer_ID,
@@ -43,8 +43,8 @@ annotate service.SalesOrders with @(
         {
             $Type : 'UI.ReferenceFacet',
             Label : 'Items',
-            ID : 'Items',
-            Target : 'Items/@UI.LineItem#Items',
+            ID    : 'Items',
+            Target: 'Items/@UI.LineItem#Items',
         },
     ],
     UI.LineItem                   : [
@@ -53,10 +53,10 @@ annotate service.SalesOrders with @(
             Label: 'OrderDate',
             Value: OrderDate,
         },
-         {
+        {
             $Type: 'UI.DataField',
             Label: 'Customer',
-            Value:  Customer_ID,
+            Value: Customer_ID,
         },
         {
             $Type       : 'UI.DataField',
@@ -82,49 +82,52 @@ annotate service.SalesOrders with @(
         Title         : {Value: ID}
     },
 
-    UI.SelectionFields            : [Status, Customer_ID],
+    UI.SelectionFields            : [
+        Status,
+        Customer_ID
+    ],
 
-     UI.Identification : [
+    UI.Identification             : [
 
-    {
-        $Type : 'UI.DataField',
-        Value : Customer_ID
-    },
+        {
+            $Type: 'UI.DataField',
+            Value: Customer_ID
+        },
 
-    {
-        $Type : 'UI.DataField',
-        Value : Status
-    },
+        {
+            $Type: 'UI.DataField',
+            Value: Status
+        },
 
-    {
-        $Type : 'UI.DataFieldForAction',
-        Action: 'OrderService.confirmOrder',
-        Label : 'Confirm Order'
-    },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'OrderService.confirmOrder',
+            Label : 'Confirm Order'
+        },
 
-    {
-        $Type : 'UI.DataFieldForAction',
-        Action: 'OrderService.shipOrder',
-        Label : 'Ship Order'
-    },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'OrderService.shipOrder',
+            Label : 'Ship Order'
+        },
 
-    {
-        $Type : 'UI.DataFieldForAction',
-        Action: 'OrderService.deliverOrder',
-        Label : 'Deliver Order'
-    },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'OrderService.deliverOrder',
+            Label : 'Deliver Order'
+        },
 
-    {
-        $Type : 'UI.DataFieldForAction',
-        Action: 'OrderService.cancelOrder',
-        Label : 'Cancel Order'
-    }
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action: 'OrderService.cancelOrder',
+            Label : 'Cancel Order'
+        }
 
-]
+    ]
 );
 
 annotate service.OrderItems with @(
-    UI.LineItem: [
+    UI.LineItem       : [
 
         {
             $Type: 'UI.DataField',
@@ -157,26 +160,26 @@ annotate service.OrderItems with @(
         }
     ],
 
-    UI.LineItem #Items : [
+    UI.LineItem #Items: [
         {
-            $Type : 'UI.DataField',
-            Value : Product_ID,
-            Label : 'Name',
+            $Type: 'UI.DataField',
+            Value: Product_ID,
+            Label: 'Name',
         },
         {
-            $Type : 'UI.DataField',
-            Value : Quantity,
-            Label : 'Quantity',
+            $Type: 'UI.DataField',
+            Value: Quantity,
+            Label: 'Quantity',
         },
         {
-            $Type : 'UI.DataField',
-            Value : UnitPrice,
-            Label : 'UnitPrice',
+            $Type: 'UI.DataField',
+            Value: UnitPrice,
+            Label: 'UnitPrice',
         },
         {
-            $Type : 'UI.DataField',
-            Value : Discount,
-            Label : 'Discount',
+            $Type: 'UI.DataField',
+            Value: Discount,
+            Label: 'Discount',
         },
     ],
 );
@@ -184,27 +187,27 @@ annotate service.OrderItems with @(
 
 annotate service.OrderItems with {
     Product @(
-        Common.Text : Product.Name,
+        Common.Text     : Product.Name,
 
-        Common.ValueList : {
-            $Type          : 'Common.ValueListType',
-            CollectionPath : 'Products',
-            Parameters     : [
+        Common.ValueList: {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'Products',
+            Parameters    : [
 
                 {
-                    $Type             : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : Product_ID,
-                    ValueListProperty : 'ID'
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Product_ID,
+                    ValueListProperty: 'ID'
                 },
 
                 {
-                    $Type             : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'ProductCode'
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'ProductCode'
                 },
 
                 {
-                    $Type             : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'Name'
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name'
                 }
 
             ]
@@ -216,26 +219,26 @@ annotate service.OrderItems with {
 annotate service.SalesOrders with {
 
     Customer @(
-        Common.Text : Customer.Name,
-        Common.ValueList : {
-            $Type          : 'Common.ValueListType',
-            CollectionPath : 'Customers',
-            Parameters     : [
+        Common.Text     : Customer.Name,
+        Common.ValueList: {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'Customers',
+            Parameters    : [
 
                 {
-                    $Type             : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : Customer_ID,
-                    ValueListProperty : 'ID'
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: Customer_ID,
+                    ValueListProperty: 'ID'
                 },
 
                 {
-                    $Type             : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'CustomerCode'
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'CustomerCode'
                 },
 
                 {
-                    $Type             : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'Name'
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'Name'
                 }
 
             ]
@@ -245,142 +248,107 @@ annotate service.SalesOrders with {
 };
 
 
-
 annotate service.OrderItems with {
 
-    UnitPrice @Common.FieldControl : #ReadOnly;
-    LineTotal @Common.FieldControl : #ReadOnly;
+    UnitPrice @Common.FieldControl: #ReadOnly;
+    LineTotal @Common.FieldControl: #ReadOnly;
 
 };
+
 annotate service.SalesOrders with {
-
-    TotalAmount @Common.FieldControl : #ReadOnly;
-
+    TotalAmount @Common.FieldControl: #ReadOnly;
 };
 
-annotate service.OrderItems with @Common.SideEffects #ProductChanged : {
-    SourceProperties : [Product_ID, Quantity],
-    TargetProperties : [UnitPrice, LineTotal]
+annotate service.OrderItems with @Common.SideEffects #ProductChanged: {
+    SourceProperties: [
+        Product_ID,
+        Quantity
+    ],
+    TargetProperties: [
+        UnitPrice,
+        LineTotal
+    ]
 };
 
-annotate service.SalesOrders with @Common.SideEffects #ItemsChanged : {
-    SourceEntities : [Items],
-    TargetProperties : [TotalAmount]
+annotate service.SalesOrders with @Common.SideEffects #ItemsChanged: {
+    SourceEntities  : [Items],
+    TargetProperties: [TotalAmount]
 };
 
 annotate OrderService.OrderItems with @(
-    
-    Capabilities.UpdateRestrictions : {
-        Updatable : {
-            $edmJson : {
-                $Or : [
 
-                    {
-                        $Eq : [
-                            { $Path : 'Order/Status' },
-                            'NEW'
-                        ]
-                    },
+    Capabilities.UpdateRestrictions: {Updatable: {$edmJson: {$Or: [
 
-                    {
-                        $Eq : [
-                            { $Path : 'Order/Status' },
-                            'PROCESSING'
-                        ]
-                    },
+        {$Eq: [
+            {$Path: 'Order/Status'},
+            'NEW'
+        ]},
 
-                    {
-                        $Eq : [
-                            { $Path : 'Order/Status' },
-                            'DRAFT'
-                        ]
-                    }
+        {$Eq: [
+            {$Path: 'Order/Status'},
+            'PROCESSING'
+        ]},
 
-                ]
-            }
-        }
-    },
+        {$Eq: [
+            {$Path: 'Order/Status'},
+            'DRAFT'
+        ]}
 
-    Capabilities.DeleteRestrictions : {
-        Deletable : {
-            $edmJson : {
-                $Or : [
+    ]}}},
 
-                    {
-                        $Eq : [
-                            { $Path : 'Order/Status' },
-                            'NEW'
-                        ]
-                    },
+    Capabilities.DeleteRestrictions: {Deletable: {$edmJson: {$Or: [
 
-                    {
-                        $Eq : [
-                            { $Path : 'Order/Status' },
-                            'PROCESSING'
-                        ]
-                    },
+        {$Eq: [
+            {$Path: 'Order/Status'},
+            'NEW'
+        ]},
 
-                    {
-                        $Eq : [
-                            { $Path : 'Order/Status' },
-                            'DRAFT'
-                        ]
-                    }
+        {$Eq: [
+            {$Path: 'Order/Status'},
+            'PROCESSING'
+        ]},
 
-                ]
-            }
-        }
-    }
+        {$Eq: [
+            {$Path: 'Order/Status'},
+            'DRAFT'
+        ]}
+
+    ]}}}
 
 );
 
+annotate OrderService.SalesOrders with @(Capabilities.UpdateRestrictions: {Updatable: {$edmJson: {$Or: [
 
-annotate OrderService.SalesOrders with @(
-    Capabilities.UpdateRestrictions : {
-        Updatable : {
-            $edmJson : {
-                $Or : [
+    {$Eq: [
+        {$Path: 'Status'},
+        'NEW'
+    ]},
 
-                    {
-                        $Eq : [
-                            { $Path : 'Status' },
-                            'NEW'
-                        ]
-                    },
+    {$Eq: [
+        {$Path: 'Status'},
+        'PROCESSING'
+    ]},
 
-                    {
-                        $Eq : [
-                            { $Path : 'Status' },
-                            'PROCESSING'
-                        ]
-                    },
+    {$Eq: [
+        {$Path: 'Status'},
+        'DRAFT'
+    ]}
 
-                    {
-                        $Eq : [
-                            { $Path : 'Status' },
-                            'DRAFT'
-                        ]
-                    }
-
-                ]
-            }
-        }
-    }
+]}}}
 
 );
+
 // annotate service.SalesOrders with {
 //     Status @(
-//         Common.ValueList : {
-//             $Type : 'Common.ValueListType',
-//             CollectionPath : 'SalesOrders',
-//             Parameters : [
-//                 {
-//                     $Type : 'Common.ValueListParameterInOut',
-//                     LocalDataProperty : Status,
-//                     ValueListProperty : 'Status',
-//                 },
-//             ],
+//         Common.ValueList               : {
+//             $Type         : 'Common.ValueListType',
+//             CollectionPath: 'UniqueOrderStatuses',
+//             Parameters    : [{
+//                 $Type            : 'Common.ValueListParameterInOut',
+//                 LocalDataProperty: Status,
+//                 ValueListProperty: 'Status'
+//             }]
 //         },
-//         Common.ValueListWithFixedValues : true,
-// )};
-
+//         Common.ValueListWithFixedValues: true
+//     )
+// };

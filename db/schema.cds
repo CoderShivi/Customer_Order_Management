@@ -115,3 +115,12 @@ entity Addresses : cuid, managed {
     Customer     : Association to Customers;
 }
 
+// entity UniqueOrderStatuses as
+//         select from SalesOrders {
+//             key Status
+//         }
+//         group by Status;
+
+
+
+

@@ -396,7 +396,6 @@ this.on('deliverOrder', async (req) => {
 });
 
 this.after('deliverOrder', async (data, req) => {
-
     const orderID = req.params[0].ID;
     console.log('Generating invoice for order', orderID);
 
@@ -440,16 +439,11 @@ this.after('deliverOrder', async (data, req) => {
     await INSERT.into(Invoices).entries({
 
         SalesOrder_ID: orderID,
-
         InvoiceDate: invoiceDate,
-
         DueDate:
-            dueDate.toISOString().split('T')[0],
-
+        dueDate.toISOString().split('T')[0],
         TotalAmount: order.TotalAmount,
-
         TaxAmount: 0,
-
         Status: 'GENERATED'
     });
 

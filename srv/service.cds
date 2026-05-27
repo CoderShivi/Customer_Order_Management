@@ -37,14 +37,15 @@ service OrderService {
   ]
 
   @odata.draft.enabled
+  @cds.redirection.target
   entity SalesOrders as projection on db.SalesOrders
 
     actions {
-
-      @requires               : [
-        'SalesManager',
-        'Administrator'
-      ]
+   @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
       @Core.OperationAvailable: {$edmJson: {$Or: [
         {$Eq: [
           {$Path: 'Status'},
@@ -58,10 +59,11 @@ service OrderService {
 
       action confirmOrder()      returns String;
 
-      @requires               : [
-        'SalesManager',
-        'Administrator'
-      ]
+       @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
 
       @Core.OperationAvailable: {$edmJson: {$Eq: [
         {$Path: 'Status'},
@@ -69,10 +71,11 @@ service OrderService {
       ]}}
       action shipOrder()       returns String;
 
-      @requires               : [
-        'SalesManager',
-        'Administrator'
-      ]
+      @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
       @Core.OperationAvailable: {$edmJson: {$Eq: [
         {$Path: 'Status'},
         'SHIPPED'
@@ -80,10 +83,11 @@ service OrderService {
 
       action deliverOrder()              returns String;
 
-      @requires               : [
-        'SalesManager',
-        'Administrator'
-      ]
+      @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
       @Core.OperationAvailable: {$edmJson: {$Or: [
         {$Eq: [
           {$Path: 'Status'},
@@ -97,9 +101,7 @@ service OrderService {
 
       action cancelOrder(reason: String) returns String;
     };
-
-
-  @restrict: [
+    @restrict: [
 
     {
       grant: [
@@ -123,6 +125,7 @@ service OrderService {
   ]
 
   entity OrderItems  as projection on db.OrderItems;
+
 }
 
 
@@ -150,14 +153,67 @@ service InvoiceService {
 
   entity Invoices         as projection on db.Invoices
     actions {
-      action markAsPaid() returns String;
-    };
 
-  @requires: [
-    'Finance',
-    'SalesManager',
-    'Administrator'
-  ]
+       @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'Finance']
+    }]
+      @Core.OperationAvailable : {
+    $edmJson : {
+        $And : [
+
+            {
+                $Ne : [
+                    { $Path : 'Status' },
+                    'PAID'
+                ]
+            },
+
+            {
+                $Ne : [
+                    { $Path : 'Status' },
+                    'CANCELLED'
+                ]
+            }
+        ]
+    }
+}
+      action markAsPaid() returns String;
+
+       @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'Finance']
+    }]
+
+      @Core.OperationAvailable : {
+    $edmJson : {
+        $And : [
+
+            {
+                $Ne : [
+                    { $Path : 'Status' },
+                    'PAID'
+                ]
+            },
+
+            {
+                $Ne : [
+                    { $Path : 'Status' },
+                    'CANCELLED'
+                ]
+            }
+        ]
+    }
+}
+      action cancelInvoice(reason : String) returns String;
+          };
+ @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'Finance']
+    }]
   function getOverdueInvoices(daysOverdue: Integer)   returns array of Invoices;
 
   @Aggregation.ApplySupported                : {
@@ -231,39 +287,45 @@ service PaymentService {
   ]
   entity Payments as projection on db.Payments;
 
-  @requires: [
-    'SalesManager',
-    'Administrator'
-  ]
+  @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
   action   makePayment(invoiceID: UUID, amount: Decimal(15, 2), paymentMethod: String) returns String;
 
-  @requires: [
-    'SalesManager',
-    'Administrator'
-  ]
+  @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
   action   refundPayment(paymentID: UUID, reason: String)                              returns String;
 
-  @requires: [
-    'SalesManager',
-    'Administrator'
-  ]
+ @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
   action   verifyPayment(paymentID: UUID)                                              returns Boolean;
 
-  @requires: [
-    'SalesManager',
-    'Administrator'
-  ]
+  @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
   function getPendingPayments()                                                        returns array of Payments;
 
-  @requires: [
-    'SalesManager',
-    'Administrator'
-  ]
+  @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
   function getTotalPayments()                                                          returns Decimal(15, 2);
 
-  @requires: [
-    'SalesManager',
-    'Administrator'
-  ]
+  @restrict: [
+      {
+      grant: '*',
+      to   : ['Administrator', 'SalesManager']
+    }]
   function getPaymentsByDateRange(fromDate: Date, toDate: Date)                        returns array of Payments;
 }

@@ -93,7 +93,17 @@ annotate service.Invoices with @(
             $Type : 'UI.DataFieldForAction',
             Action : 'InvoiceService.markAsPaid',
             Label : 'Mark As Paid'
-        }
+        },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'InvoiceService.cancelInvoice',
+            Label : 'Cancel Invoice'
+        },
+        {
+    $Type  : 'UI.DataFieldForAction',
+    Action : 'InvoiceService.downloadInvoicePDF',
+    Label  : 'Download PDF'
+}
     ]
   
 );
