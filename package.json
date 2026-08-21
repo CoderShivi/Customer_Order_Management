@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "dependencies": {
     "@cap-js/hana": "^2.8.0",
+    "@sap_oss/alert-notification-client": "^1.14.0",
     "@sap/cds": "^9",
-    "@sap/xssec": "^4"
+    "@sap/xsenv": "^6.2.1",
+    "@sap/xssec": "^4",
+    "axios": "^1.16.1",
+    "pdfkit": "^0.18.0"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2.4",
@@ -21,7 +25,10 @@
     "undeploy": "cf undeploy Customer_Order_Management --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
-    "watch-invoice_analytics": "cds watch --open invoiceanalytics/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-invoice_analytics": "cds watch --open invoiceanalytics/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-customer": "cds watch --open customer/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-product": "cds watch --open product/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-project_1": "cds watch --open project1/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {
@@ -36,7 +43,10 @@
         "auth": "xsuaa"
       },
       "[development]": {
-        "auth": "dummy"
+        "auth": "dummy",
+        "db": {
+          "kind": "sqlite"
+        }
       }
     },
     "server": {
@@ -50,6 +60,9 @@
     "app/sales_portal",
     "app/finance_dashboard",
     "app/financedashboard",
-    "app/invoice_analytics"
+    "app/invoice_analytics",
+    "app/customer",
+    "app/product",
+    "app/project_1"
   ]
 }

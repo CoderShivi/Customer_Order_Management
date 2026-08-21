@@ -1,5 +1,6 @@
 const cds = require('@sap/cds');
 const { UPDATE } = require('@sap/cds/lib/ql/cds-ql');
+const { sendAlert } =require('./utils/alertnotification');
 
 module.exports = cds.service.impl(async function () {
     const { SalesOrders, Products, OrderItems, Customers,  Addresses } = this.entities('OrderService');
@@ -38,8 +39,6 @@ this.before('SAVE', 'SalesOrders', async (req) => {
     order.ShippingAddress =
         `${shippingAddress.AddressLine1}, ${shippingAddress.City}, ${shippingAddress.State}, ${shippingAddress.Country}`;**/
 });
-
-
 
 this.before(['CREATE', 'PATCH'], 'OrderItems.drafts', async (req) => {
 
@@ -216,7 +215,11 @@ this.before('confirmOrder', async (req) => {
         order.TotalAmount >
         customer.CreditLimit
     ) {
-
+        sendAlert(
+                `Credit limit exceeded for order ${ID}`,
+                "CREDIT_LIMIT",
+                "WARNING"
+            ).catch(console.error);
         return req.error(
             400,
             'Order amount exceeds customer credit limit'
@@ -308,6 +311,12 @@ this.on('confirmOrder', async (req) => {
             ID: orderID
         });
 
+        console.log("Confirm Order Action Triggered");
+        sendAlert(
+            `Order ${orderID} confirmed successfully`,
+            "ORDER_CONFIRMED"
+        ).catch(console.error);
+
     return 'Order confirmed successfully';
 });
 
@@ -356,6 +365,11 @@ this.on('shipOrder', async (req) => {
             ID: orderID
         });
 
+          sendAlert(
+            `Order ${orderID} shipped successfully`,
+            "ORDER_SHIPPED"
+        ).catch(console.error);
+
     return 'Order shipped successfully';
 });
 
@@ -391,6 +405,14 @@ this.on('deliverOrder', async (req) => {
     await UPDATE(SalesOrders)
         .set({ Status: 'DELIVERED' })
         .where({ ID: orderID });
+
+         sendAlert(
+            `Order ${orderID} delivered successfully`,
+            "ORDER_DELIVERED"
+        ).catch(console.error);
+
+        
+
 
     return 'Order delivered successfully';
 });
@@ -455,8 +477,6 @@ this.on('cancelOrder', async (req) => {
 
     const orderID = req.params[0].ID;
 
-    const {reason} = req.data;
-
     // Fetch order
     const order = await SELECT.one
         .from(SalesOrders)
@@ -520,12 +540,12 @@ this.on('cancelOrder', async (req) => {
             ID: orderID
         });
 
-    console.log(
-        'Cancellation Reason:',
-        reason
-    );
+     sendAlert(
+            `Order ${orderID} cancelled successfully`,
+            "ORDER_CANCELLED"
+        ).catch(console.error);
+
 
     return 'Order cancelled successfully';
 });
-
 });

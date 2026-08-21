@@ -1,221 +1,265 @@
 _schema-version: 3.3.0
 ID: Customer_Order_Management
+description: A simple CAP project.
 version: 1.0.0
-description: "A simple CAP project."
-parameters:
-  enable-parallel-deployments: true
-  deploy_mode: html5-repo
-build-parameters:
-  before-all:
-    - builder: custom
-      commands:
-        - npm ci
-        - npx cds build --production
 modules:
-  - name: Customer_Order_Management-srv
-    type: nodejs
-    path: gen/srv
-    parameters:
-      instances: 1
-      buildpack: nodejs_buildpack
-    build-parameters:
-      builder: npm-ci
-    provides:
-      - name: srv-api # required by consumers of CAP services (e.g. approuter)
-        properties:
-          srv-url: ${default-url}
-    requires:
-      - name: Customer_Order_Management-db
-      - name: Customer_Order_Management-destination
-      - name: Customer_Order_Management-auth
-
-  - name: Customer_Order_Management-db-deployer
-    type: hdb
-    path: gen/db
-    parameters:
-      buildpack: nodejs_buildpack
-    requires:
-      - name: Customer_Order_Management-db
-  - name: Customer_Order_Management
-    type: approuter.nodejs
-    path: app/router
-    parameters:
-      keep-existing-routes: true
-      disk-quota: 256M
-      memory: 256M
-    requires:
-      - name: srv-api
-        group: destinations
-        properties:
-          name: srv-api # must be used in xs-app.json as well
-          url: ~{srv-url}
-          forwardAuthToken: true
-      - name: Customer_Order_Management-html5-runtime
-      - name: Customer_Order_Management-auth
-    provides:
-      - name: app-api
-        properties:
-          app-protocol: ${protocol}
-          app-uri: ${default-uri}
-
-  - name: Customer_Order_Management-app-deployer
-    type: com.sap.application.content
-    path: gen
-    build-parameters:
-      build-result: app/
-      requires:
-        - name: Customer_Order_Managementfinance_dashboard
-          artifacts:
-            - finance_dashboard.zip
-          target-path: app/
-        - name: Customer_Order_Managementinvoice_analytics
-          artifacts:
-            - invoice_analytics.zip
-          target-path: app/
-        - name: Customer_Order_Managementsales_portal
-          artifacts:
-            - sales_portal.zip
-          target-path: app/
-    requires:
-      - name: srv-api
-      - name: Customer_Order_Management-html5-repo-host
-        parameters:
-          content-target: true
-          config:
-            HTML5Runtime_enabled: true
-      - name: Customer_Order_Management-auth
+- name: Customer_Order_Management-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: Customer_Order_Management-db
+  - name: Customer_Order_Management-destination
+  - name: Customer_Order_Management-auth
+  - name: alert-notification
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    instances: 1
+  build-parameters:
+    builder: npm-ci
+- name: Customer_Order_Management-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: Customer_Order_Management-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: Customer_Order_Management
+  type: approuter.nodejs
+  path: app/router
+  requires:
+  - name: srv-api
+    group: destinations
+    properties:
+      forwardAuthToken: true
+      name: srv-api
+      url: ~{srv-url}
+  - name: Customer_Order_Management-html5-runtime
+  - name: Customer_Order_Management-auth
+  - name: Customer_Order_Management-destination
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  provides:
+  - name: app-api
+    properties:
+      app-protocol: ${protocol}
+      app-uri: ${default-uri}
+  parameters:
+    disk-quota: 256M
+    keep-existing-routes: true
+    memory: 256M
+- name: Customer_Order_Management-app-deployer
+  type: com.sap.application.content
+  path: gen
+  requires:
+  - name: srv-api
+  - name: Customer_Order_Management-html5-repo-host
     parameters:
       config:
-        destinations:
-          - Name: srv-api
-            URL: ~{srv-api/srv-url}
-            Authentication: NoAuthentication
-            Type: HTTP
-            ProxyType: Internet
-            HTML5.ForwardAuthToken: true
-            HTML5.DynamicDestination: true
-
-  - name: Customer_Order_Managementfinance_dashboard
-    type: html5
-    path: app/finance_dashboard
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm ci
-        - npm run build
-      supported-platforms:
-        []
-  - name: Customer_Order_Managementinvoice_analytics
-    type: html5
-    path: app/invoice_analytics
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm ci
-        - npm run build
-      supported-platforms:
-        []
-  - name: Customer_Order_Managementsales_portal
-    type: html5
-    path: app/sales_portal
-    build-parameters:
-      build-result: dist
-      builder: custom
-      commands:
-        - npm ci
-        - npm run build
-      supported-platforms:
-        []
-
-  - name: Customer_Order_Management-destinations
-    type: com.sap.application.content
+        HTML5Runtime_enabled: true
+      content-target: true
+  - name: Customer_Order_Management-auth
+  parameters:
+    config:
+      destinations:
+      - Authentication: NoAuthentication
+        HTML5.DynamicDestination: true
+        HTML5.ForwardAuthToken: true
+        Name: srv-api
+        ProxyType: Internet
+        Type: HTTP
+        URL: ~{srv-api/srv-url}
+  build-parameters:
+    build-result: app/
     requires:
-      - name: Customer_Order_Management-html5-repo-host
-        parameters:
-          service-key:
-            name: Customer_Order_Management-html5-repo-host-key
-      - name: srv-api
-      - name: Customer_Order_Management-destination
-        parameters:
-          content-target: true
-      - name: Customer_Order_Management-auth
-        parameters:
-          service-key:
-            name: Customer_Order_Management-auth-key
-    build-parameters:
-      no-source: true
+    - artifacts:
+      - finance_dashboard.zip
+      name: Customer_Order_Managementfinance_dashboard
+      target-path: app/
+    - artifacts:
+      - invoice_analytics.zip
+      name: Customer_Order_Managementinvoice_analytics
+      target-path: app/
+    - artifacts:
+      - sales_portal.zip
+      name: Customer_Order_Managementsales_portal
+      target-path: app/
+    - artifacts:
+      - customer.zip
+      name: customer
+      target-path: app/
+    - artifacts:
+      - product.zip
+      name: product
+      target-path: app/
+    
+- name: Customer_Order_Managementfinance_dashboard
+  type: html5
+  path: app/finance_dashboard
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: Customer_Order_Managementinvoice_analytics
+  type: html5
+  path: app/invoice_analytics
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: Customer_Order_Managementsales_portal
+  type: html5
+  path: app/sales_portal
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: Customer_Order_Management-destinations
+  type: com.sap.application.content
+  requires:
+  - name: Customer_Order_Management-html5-repo-host
     parameters:
-      content:
-        instance:
-          existing_destinations_policy: update
-          destinations:
-            - Name: Customer_Order_Management-html5-repository
-              ServiceInstanceName: Customer_Order_Management-html5-repo-host
-              ServiceKeyName: Customer_Order_Management-html5-repo-host-key
-              sap.cloud.service: Customer_Order_Management.service
-            - Name: Customer_Order_Management-auth
-              Authentication: OAuth2UserTokenExchange
-              ServiceInstanceName: Customer_Order_Management-auth
-              ServiceKeyName: Customer_Order_Management-auth-key
-              sap.cloud.service: Customer_Order_Management.service
+      service-key:
+        name: Customer_Order_Management-html5-repo-host-key
+  - name: srv-api
+  - name: Customer_Order_Management-destination
+    parameters:
+      content-target: true
+  - name: Customer_Order_Management-auth
+    parameters:
+      service-key:
+        name: Customer_Order_Management-auth-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: Customer_Order_Management-html5-repository
+          ServiceInstanceName: Customer_Order_Management-html5-repo-host
+          ServiceKeyName: Customer_Order_Management-html5-repo-host-key
+          sap.cloud.service: Customer_Order_Management.service
+        - Authentication: OAuth2UserTokenExchange
+          Name: Customer_Order_Management-auth
+          ServiceInstanceName: Customer_Order_Management-auth
+          ServiceKeyName: Customer_Order_Management-auth-key
+          sap.cloud.service: Customer_Order_Management.service
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+- name: customer
+  type: html5
+  path: app/customer
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: product
+  type: html5
+  path: app/product
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
 
 resources:
-  - name: Customer_Order_Management-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
-  - name: Customer_Order_Management-destination
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: destination
-      service-plan: lite
-    requires:
-      - name: srv-api
-
-  - name: Customer_Order_Management-html5-repo-host
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-host
-  - name: Customer_Order_Management-html5-runtime
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: html5-apps-repo
-      service-plan: app-runtime
-  - name: Customer_Order_Management-auth
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      service-plan: application
-      path: ./xs-security.json
-      config:
-        xsappname: Customer_Order_Management-${org}-${space}
-        tenant-mode: dedicated
-        oauth2-configuration:
-          credential-types:
-            - "binding-secret"
-            - "x509"
-          redirect-uris:
-            - https://*~{app-api/app-uri}/**
-        role-collections:
-          - name: 'SalesRep (Customer_Order_Management ${org}-${space})'
-            description: 'generated'
-            role-template-references:
-              - '$XSAPPNAME.SalesRep'
-          - name: 'SalesManager (Customer_Order_Management ${org}-${space})'
-            description: 'generated'
-            role-template-references:
-              - '$XSAPPNAME.SalesManager'
-          - name: 'Finance (Customer_Order_Management ${org}-${space})'
-            description: 'generated'
-            role-template-references:
-              - '$XSAPPNAME.Finance'
-          - name: 'Administrator (Customer_Order_Management ${org}-${space})'
-            description: 'generated'
-            role-template-references:
-              - '$XSAPPNAME.Administrator'
-    requires:
-      - name: app-api
+- name: Customer_Order_Management-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: Customer_Order_Management-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+    service: destination
+    service-plan: lite
+  requires:
+  - name: srv-api
+- name: alert-notification
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: alert-notification
+    service-plan: standard
+- name: Customer_Order_Management-html5-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+- name: Customer_Order_Management-html5-runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: Customer_Order_Management-auth
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      oauth2-configuration:
+        credential-types:
+        - binding-secret
+        - x509
+        redirect-uris:
+        - https://*~{app-api/app-uri}/**
+      role-collections:
+      - description: generated
+        name: SalesRep (Customer_Order_Management ${org}-${space})
+        role-template-references:
+        - $XSAPPNAME.SalesRep
+      - description: generated
+        name: SalesManager (Customer_Order_Management ${org}-${space})
+        role-template-references:
+        - $XSAPPNAME.SalesManager
+      - description: generated
+        name: Finance (Customer_Order_Management ${org}-${space})
+        role-template-references:
+        - $XSAPPNAME.Finance
+      - description: generated
+        name: Administrator (Customer_Order_Management ${org}-${space})
+        role-template-references:
+        - $XSAPPNAME.Administrator
+      tenant-mode: dedicated
+      xsappname: Customer_Order_Management-${org}-${space}
+    path: ./xs-security.json
+    service: xsuaa
+    service-plan: application
+  requires:
+  - name: app-api
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production

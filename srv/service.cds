@@ -8,8 +8,11 @@ using {order.db as db} from '../db/schema';
 ]
 @impl    : 'srv/order.js'
 service OrderService {
+  @odata.draft.enabled
   entity Customers   as projection on db.Customers;
+  
   entity Addresses   as projection on db.Addresses;
+  @odata.draft.enabled
   entity Products    as projection on db.Products;
 
 
@@ -81,7 +84,7 @@ service OrderService {
         'SHIPPED'
       ]}}
 
-      action deliverOrder()              returns String;
+      action deliverOrder()     returns String;
 
       @restrict: [
       {
@@ -125,13 +128,13 @@ service OrderService {
   ]
 
   entity OrderItems  as projection on db.OrderItems;
+  entity uniqueOrderStatuses as projection on db.UniqueOrderStatuses;
 
 }
 
 
 @impl: 'srv/invoice.js'
 service InvoiceService {
-
   @restrict: [
     {
       grant: [
@@ -150,9 +153,11 @@ service InvoiceService {
       to   : ['Administrator']
     }
   ]
-
-  entity Invoices         as projection on db.Invoices
+  @cds.redirection.target
+  entity Invoices  as projection on db.Invoices
     actions {
+    
+      action downloadInvoicePDF() returns LargeBinary;
 
        @restrict: [
       {
@@ -215,6 +220,7 @@ service InvoiceService {
       to   : ['Administrator', 'Finance']
     }]
   function getOverdueInvoices(daysOverdue: Integer)   returns array of Invoices;
+  
 
   @Aggregation.ApplySupported                : {
     Transformations       : [
@@ -261,6 +267,8 @@ service InvoiceService {
     }
     group by
       Status;
+
+entity uniqueInvoiceStatuses as projection on db.UniqueinvoiceStatuses;
 
 }
 

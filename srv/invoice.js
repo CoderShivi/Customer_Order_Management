@@ -1,5 +1,8 @@
 const cds = require('@sap/cds');
 
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = cds.service.impl(async function () {
     const { Invoices } = this.entities;
@@ -118,20 +121,16 @@ module.exports = cds.service.impl(async function () {
     return 'Invoice cancelled successfully';
 });
 
-
-
 // this.on('downloadInvoicePDF', async (req) => {
 
 //     const invoiceID = req.params[0].ID;
-
-//     // Fetch invoice
 //     const invoice = await SELECT.one
 //         .from(Invoices)
 //         .where({
 //             ID: invoiceID
 //         });
 
-//     // Validation
+
 //     if (!invoice) {
 
 //         req.error(
@@ -215,5 +214,4 @@ module.exports = cds.service.impl(async function () {
 //         ${filePath}
 //     `;
 // });
-
 });

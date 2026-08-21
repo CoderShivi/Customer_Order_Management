@@ -88,7 +88,6 @@ annotate service.Invoices with @(
         DueDate
     ],
      UI.Identification : [
-
         {
             $Type : 'UI.DataFieldForAction',
             Action : 'InvoiceService.markAsPaid',
@@ -99,14 +98,48 @@ annotate service.Invoices with @(
             Action : 'InvoiceService.cancelInvoice',
             Label : 'Cancel Invoice'
         },
-        {
-    $Type  : 'UI.DataFieldForAction',
-    Action : 'InvoiceService.downloadInvoicePDF',
-    Label  : 'Download PDF'
-}
+//         {
+//     $Type  : 'UI.DataFieldForAction',
+//     Action : 'InvoiceService.downloadInvoicePDF',
+//     Label  : 'Download PDF'
+// }
     ]
   
 );
+
+annotate service.Invoices with {
+    Status @(
+        Common.ValueList               : {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'uniqueInvoiceStatuses',
+            Parameters    : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: Status,
+                ValueListProperty: 'Status'
+            }]
+        },
+        Common.ValueListWithFixedValues: true
+    )
+};
+
+annotate service.Invoices with {
+
+    DueDate @(
+        Common.Text     : 'Due Date',
+        Common.ValueList: {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'Invoices',
+             Parameters    : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: DueDate,
+                ValueListProperty: 'DueDate'
+
+            }]
+            
+            
+        }
+    );
+};
 
 
 

@@ -1,10 +1,9 @@
 using OrderService as service from '../../srv/service';
-
 annotate service.SalesOrders with @(
     UI.FieldGroup #GeneratedGroup : {
         $Type: 'UI.FieldGroupType',
         Data : [
-            {
+            {       
                 $Type: 'UI.DataField',
                 Label: 'OrderDate',
                 Value: OrderDate,
@@ -76,11 +75,6 @@ annotate service.SalesOrders with @(
         },
     ],
 
-    UI.HeaderInfo                 : {
-        TypeName      : 'Sales Order',
-        TypeNamePlural: 'Sales Orders',
-        Title         : {Value: ID}
-    },
 
     UI.SelectionFields            : [
         Status,
@@ -88,27 +82,19 @@ annotate service.SalesOrders with @(
     ],
 
     UI.Identification             : [
-
-        {
-            $Type: 'UI.DataField',
-            Value: Customer_ID
-        },
-
-        {
-            $Type: 'UI.DataField',
-            Value: Status
-        },
-
         {
             $Type : 'UI.DataFieldForAction',
             Action: 'OrderService.confirmOrder',
-            Label : 'Confirm Order'
+            Label : 'Confirm Order',
+            Criticality:3
         },
 
         {
             $Type : 'UI.DataFieldForAction',
             Action: 'OrderService.shipOrder',
-            Label : 'Ship Order'
+            Label : 'Ship Order',
+            Criticality:4
+
         },
 
         {
@@ -127,14 +113,12 @@ annotate service.SalesOrders with @(
 );
 
 annotate service.OrderItems with @(
-    UI.LineItem       : [
-
+    UI.LineItem : [
         {
             $Type: 'UI.DataField',
             Label: 'Product',
             Value: Product_ID,
         },
-
         {
             $Type: 'UI.DataField',
             Label: 'Quantity',
@@ -193,7 +177,6 @@ annotate service.OrderItems with {
             $Type         : 'Common.ValueListType',
             CollectionPath: 'Products',
             Parameters    : [
-
                 {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: Product_ID,
@@ -224,7 +207,6 @@ annotate service.SalesOrders with {
             $Type         : 'Common.ValueListType',
             CollectionPath: 'Customers',
             Parameters    : [
-
                 {
                     $Type            : 'Common.ValueListParameterInOut',
                     LocalDataProperty: Customer_ID,
@@ -244,15 +226,12 @@ annotate service.SalesOrders with {
             ]
         }
     );
-
 };
 
 
 annotate service.OrderItems with {
-
     UnitPrice @Common.FieldControl: #ReadOnly;
     LineTotal @Common.FieldControl: #ReadOnly;
-
 };
 
 annotate service.SalesOrders with {
@@ -297,7 +276,6 @@ annotate OrderService.OrderItems with @(
     ]}}},
 
     Capabilities.DeleteRestrictions: {Deletable: {$edmJson: {$Or: [
-
         {$Eq: [
             {$Path: 'Order/Status'},
             'NEW'
@@ -318,7 +296,6 @@ annotate OrderService.OrderItems with @(
 );
 
 annotate OrderService.SalesOrders with @(Capabilities.UpdateRestrictions: {Updatable: {$edmJson: {$Or: [
-
     {$Eq: [
         {$Path: 'Status'},
         'NEW'
@@ -335,20 +312,49 @@ annotate OrderService.SalesOrders with @(Capabilities.UpdateRestrictions: {Updat
     ]}
 
 ]}}}
-
 );
 
-// annotate service.SalesOrders with {
-//     Status @(
-//         Common.ValueList               : {
-//             $Type         : 'Common.ValueListType',
-//             CollectionPath: 'UniqueOrderStatuses',
-//             Parameters    : [{
-//                 $Type            : 'Common.ValueListParameterInOut',
-//                 LocalDataProperty: Status,
-//                 ValueListProperty: 'Status'
-//             }]
-//         },
-//         Common.ValueListWithFixedValues: true
-//     )
-// };
+annotate service.SalesOrders with {
+    Status @(
+        Common.ValueList               : {
+            $Type         : 'Common.ValueListType',
+            CollectionPath: 'uniqueOrderStatuses',
+            Parameters    : [{
+                $Type            : 'Common.ValueListParameterInOut',
+                LocalDataProperty: Status,
+                ValueListProperty: 'Status'
+            }]
+        },
+        Common.ValueListWithFixedValues: true
+    )
+};
+
+annotate OrderService.SalesOrders with @(
+    UI.HeaderInfo : {
+        TypeName       : 'Sales Order',
+        TypeNamePlural : 'Sales Orders',    
+        Title : {
+            Value : ID
+        },
+
+        Description : {
+            Value : Status
+            
+        }
+    },
+
+    UI.DataPoint #TotalAmount : {
+        Title : 'Total Amount (₹)',
+        Value : TotalAmount,
+        Criticality : #Positive  
+    },
+
+    UI.HeaderFacets : [
+
+        {
+            $Type  : 'UI.ReferenceFacet',
+            Label  : 'Order Amount',
+            Target : '@UI.DataPoint#TotalAmount'
+        }
+    ]
+);

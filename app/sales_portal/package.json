@@ -19,6 +19,7 @@
   "scripts": {
     "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf",
     "build": "ui5 build preload --clean-dest",
+    "build:cf": "ui5 build preload --clean-dest",
     "start": "ui5 serve"
   }
 }

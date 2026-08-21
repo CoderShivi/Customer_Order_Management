@@ -126,6 +126,7 @@
           "options": {
             "settings": {
               "contextPath": "/SalesOrders",
+              "liveMode": true,
               "variantManagement": "Page",
               "navigation": {
                 "SalesOrders": {

@@ -39,6 +39,15 @@
 						"parameters": {},
 						"additionalParameters": "allowed"
 					}
+				},
+				"Finance-Display": {
+					"semanticObject": "Finance",
+					"action": "Display",
+					"title": "{{Finance-Display.flpTitle}}",
+					"signature": {
+						"parameters": {},
+						"additionalParameters": "allowed"
+					}
 				}
 			}
 		}
