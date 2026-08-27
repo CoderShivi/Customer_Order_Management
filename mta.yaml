@@ -10,7 +10,6 @@ modules:
   - name: Customer_Order_Management-db
   - name: Customer_Order_Management-destination
   - name: Customer_Order_Management-auth
-  - name: alert-notification
   provides:
   - name: srv-api
     properties:
@@ -205,11 +204,6 @@ resources:
     service-plan: lite
   requires:
   - name: srv-api
-- name: alert-notification
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: alert-notification
-    service-plan: standard
 - name: Customer_Order_Management-html5-repo-host
   type: org.cloudfoundry.managed-service
   parameters:
