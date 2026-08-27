@@ -1,6 +1,6 @@
 const cds = require('@sap/cds');
 const { UPDATE } = require('@sap/cds/lib/ql/cds-ql');
-const { sendAlert } =require('./utils/alertnotification');
+// const { sendAlert } =require('./utils/alertnotification');
 
 module.exports = cds.service.impl(async function () {
     const { SalesOrders, Products, OrderItems, Customers,  Addresses } = this.entities('OrderService');
