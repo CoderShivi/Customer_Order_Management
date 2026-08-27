@@ -215,11 +215,11 @@ this.before('confirmOrder', async (req) => {
         order.TotalAmount >
         customer.CreditLimit
     ) {
-        sendAlert(
-                `Credit limit exceeded for order ${ID}`,
-                "CREDIT_LIMIT",
-                "WARNING"
-            ).catch(console.error);
+        // sendAlert(
+        //         `Credit limit exceeded for order ${ID}`,
+        //         "CREDIT_LIMIT",
+        //         "WARNING"
+        //     ).catch(console.error);
         return req.error(
             400,
             'Order amount exceeds customer credit limit'
@@ -312,10 +312,10 @@ this.on('confirmOrder', async (req) => {
         });
 
         console.log("Confirm Order Action Triggered");
-        sendAlert(
-            `Order ${orderID} confirmed successfully`,
-            "ORDER_CONFIRMED"
-        ).catch(console.error);
+        // sendAlert(
+        //     `Order ${orderID} confirmed successfully`,
+        //     "ORDER_CONFIRMED"
+        // ).catch(console.error);
 
     return 'Order confirmed successfully';
 });
@@ -365,10 +365,10 @@ this.on('shipOrder', async (req) => {
             ID: orderID
         });
 
-          sendAlert(
-            `Order ${orderID} shipped successfully`,
-            "ORDER_SHIPPED"
-        ).catch(console.error);
+        //   sendAlert(
+        //     `Order ${orderID} shipped successfully`,
+        //     "ORDER_SHIPPED"
+        // ).catch(console.error);
 
     return 'Order shipped successfully';
 });
@@ -406,10 +406,10 @@ this.on('deliverOrder', async (req) => {
         .set({ Status: 'DELIVERED' })
         .where({ ID: orderID });
 
-         sendAlert(
-            `Order ${orderID} delivered successfully`,
-            "ORDER_DELIVERED"
-        ).catch(console.error);
+        //  sendAlert(
+        //     `Order ${orderID} delivered successfully`,
+        //     "ORDER_DELIVERED"
+        // ).catch(console.error);
 
         
 
@@ -540,10 +540,10 @@ this.on('cancelOrder', async (req) => {
             ID: orderID
         });
 
-     sendAlert(
-            `Order ${orderID} cancelled successfully`,
-            "ORDER_CANCELLED"
-        ).catch(console.error);
+    //  sendAlert(
+    //         `Order ${orderID} cancelled successfully`,
+    //         "ORDER_CANCELLED"
+    //     ).catch(console.error);
 
 
     return 'Order cancelled successfully';
